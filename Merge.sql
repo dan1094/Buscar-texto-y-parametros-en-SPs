@@ -43,3 +43,21 @@
 		SET @ID = (SELECT ID_PX AS Id FROM @TEMP)
 	END
 -------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+
+	MERGE CITY_PRICE_ZONE AS TARGET
+		USING (SELECT   @CPZ_CITY_ID,
+						@CPZ_PRICE_ZONE	) AS SOURCE (CPZ_CITY_ID, CPZ_PRICE_ZONE)
+		ON 
+		(TARGET.CPZ_CITY_ID = SOURCE.CPZ_CITY_ID)			
+		--Cuando los registros coinciden actualiza
+		WHEN MATCHED THEN
+		UPDATE SET 
+			TARGET.CPZ_PRICE_ZONE = @CPZ_PRICE_ZONE
+
+		--Cuando los registros no coinciden, Inserta lo q llega del origen.
+		WHEN NOT MATCHED THEN 
+		INSERT (CPZ_CITY_ID,
+				CPZ_PRICE_ZONE) 
+		VALUES (SOURCE.CPZ_CITY_ID,
+				SOURCE.CPZ_PRICE_ZONE);
