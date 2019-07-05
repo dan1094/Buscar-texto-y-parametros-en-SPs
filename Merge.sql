@@ -1,3 +1,18 @@
+
+
+MERGE INTO CategoryItem AS TARGET
+USING (
+  SELECT ItemId FROM SomeExternalDataSource WHERE CategoryId = 2
+) AS SOURCE
+ON SOURCE.ItemId = TARGET.ItemId AND TARGET.CategoryId = 2
+WHEN NOT MATCHED BY TARGET THEN
+    INSERT ( CategoryId, ItemId )
+    VALUES ( 2, ItemId )
+WHEN NOT MATCHED BY SOURCE AND TARGET.CategoryId = 2 THEN
+    DELETE ;
+    
+
+
 -------------------------------------------------------------
 --MERGE INSERTA, ACTUALIZA, ELIMINA
 -------------------------------------------------------------
